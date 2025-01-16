@@ -8,7 +8,6 @@ exports.createPublication = async (req, res) => {
         const publication = await Publication.create({
             title,
             content,
-            author: req.user ? req.user.id : '65a64b89bbf8d3a3947a6ef1' // ID temporaire pour test
         });
 
         console.log('Publication created:', publication);
@@ -49,8 +48,7 @@ exports.getPublications = async (req, res) => {
 // Récupérer une publication par ID
 exports.getPublicationById = async (req, res) => {
     try {
-        const publication = await Publication.findById(req.params.id)
-            .populate('author', 'username email');
+        const publication = await Publication.findById(req.params.id);
 
         if (!publication) {
             return res.status(404).json({
@@ -83,14 +81,6 @@ exports.updatePublication = async (req, res) => {
             });
         }
 
-        // Vérifier si l'utilisateur est l'auteur
-        if (publication.author.toString() !== req.user.id) {
-            return res.status(403).json({
-                success: false,
-                message: 'Not authorized to update this publication'
-            });
-        }
-
         const updatedPublication = await Publication.findByIdAndUpdate(
             req.params.id,
             req.body,
@@ -118,14 +108,6 @@ exports.deletePublication = async (req, res) => {
             return res.status(404).json({
                 success: false,
                 message: 'Publication not found'
-            });
-        }
-
-        // Vérifier si l'utilisateur est l'auteur
-        if (publication.author.toString() !== req.user.id) {
-            return res.status(403).json({
-                success: false,
-                message: 'Not authorized to delete this publication'
             });
         }
 
