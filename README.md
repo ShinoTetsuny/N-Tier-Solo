@@ -159,14 +159,3 @@ npm start
 
 MIT License
 ```
-
-Ce README :
-1. Explique l'architecture de l'application
-2. Détaille la configuration nécessaire
-3. Fournit les instructions d'installation
-4. Décrit les fonctionnalités
-5. Liste les technologies utilisées
-6. Donne la structure du projet
-7. Explique comment contribuer
-
-Voulez-vous que je détaille davantage certaines parties ?
