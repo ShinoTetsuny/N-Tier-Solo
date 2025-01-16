@@ -1,35 +1,50 @@
 import { createContext, useState, useContext, useEffect } from 'react';
 import { authService } from '../services/authService';
+import { jwtDecode } from 'jwt-decode';
 
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(authService.getToken());
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const login = (userData, userToken) => {
+  const checkAuth = () => {
+    const token = authService.getToken();
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        setUser(decoded);
+        setIsAuthenticated(true);
+      } catch (error) {
+        console.error('Token invalide:', error);
+        logout();
+      }
+    }
+  };
+
+  useEffect(() => {
+    checkAuth();
+  }, []);
+
+  const login = (userData, token) => {
+    authService.setToken(token);
     setUser(userData);
-    setToken(userToken);
-    authService.setToken(userToken);
+    setIsAuthenticated(true);
   };
 
   const logout = () => {
-    setUser(null);
-    setToken(null);
     authService.removeToken();
+    setUser(null);
+    setIsAuthenticated(false);
   };
 
-  // Vérifier le token au chargement
-  useEffect(() => {
-    const token = authService.getToken();
-    if (token) {
-      // Optionnel : Vérifier la validité du token avec le backend
-      setToken(token);
-    }
-  }, []);
-
   return (
-    <AuthContext.Provider value={{ user, token, login, logout, isAuthenticated: !!token }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      isAuthenticated, 
+      login, 
+      logout 
+    }}>
       {children}
     </AuthContext.Provider>
   );

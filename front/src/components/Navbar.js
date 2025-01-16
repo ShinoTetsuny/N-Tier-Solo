@@ -1,9 +1,10 @@
 import { AppBar, Toolbar, Button, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useEffect } from 'react';
 
 const Navbar = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, isAuthenticated } = useAuth();
 
   return (
     <AppBar position="static">
@@ -11,9 +12,13 @@ const Navbar = () => {
         <Typography variant="h6" component={Link} to="/" sx={{ flexGrow: 1, textDecoration: 'none', color: 'white' }}>
           Mon App
         </Typography>
-        {user ? (
+        
+        <Button color="inherit" component={Link} to="/publications" sx={{ mr: 2 }}>
+          Publications
+        </Button>
+
+        {isAuthenticated ? (
           <>
-            <Button color="inherit" component={Link} to="/publications">Publications</Button>
             <Button color="inherit" onClick={logout}>Déconnexion</Button>
           </>
         ) : (
